@@ -57,5 +57,53 @@ module.exports = {
         } catch (err) {
             res.status(500).json(err)
           }
-        }
+        },
+    async addFriend(req,res){
+        try{const user = await User.findOneAndUpdate(
+            {_id: req.params.userId},
+            {$push: {friends: req.params.friendId}},
+            {runValidators:true, new:true}
+        )
+        // reciprocate so that the friended person adds the first user back
+        // not sure if this is needed
+        // const user1 = await User.findOneAndUpdate(
+        //     {_id: req.params.friendId},
+        //     {$push: {friends: req.params.userID}},
+        //     {runValidators:true, new:true}
+        // )
+        if (!user) {
+            return res
+              .status(404)
+              .json({ message: 'No users with this ID' });
+          }
+    
+          res.json({ message: 'Added Friend!' });
+        } catch (err) {
+            res.status(500).json(err)
+          }
+        
+    }, 
+    async removeFriend(req,res){
+        try{const user = await User.findOneAndUpdate(
+            {_id: req.params.userId},
+            {$pull: {friends: req.params.friendId}},
+            {runValidators:true, new:true}
+        )
+        // it makes more sense to have the reciprocation in the removal of friends
+        const user1 = await User.findOneAndUpdate(
+            {_id: req.params.friendId},
+            {$pull: {friends: req.params.userId}},
+            {runValidators:true, new:true}
+        )
+        if (!user || !user1) {
+            return res
+              .status(404)
+              .json({ message: 'No users with this ID' });
+          }
+    
+          res.json({ message: 'Removed Friend!' });
+        } catch (err) {
+            res.status(500).json(err)
+          }  
+    }
 }
