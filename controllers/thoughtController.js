@@ -16,8 +16,9 @@ module.exports = {
                 return res.status(404).json({ message: 'No thought with that ID' });
               }
         
-              res.json(user)
+              res.json(thought)
         } catch (err) {
+            console.log(err);
             res.status(500).json(err)
           }
     },
@@ -39,6 +40,7 @@ module.exports = {
 
         } catch (err) {
             res.status(500).json(err)
+            console.log(err);
           }
     },
     async updateThought(req,res){
@@ -53,6 +55,7 @@ module.exports = {
                   }
                 res.json({message:"Thought updated!" })
         } catch (err) {
+            console.log(err)
             res.status(500).json(err)
           }
     },
